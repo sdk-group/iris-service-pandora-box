@@ -3,29 +3,24 @@
 let emitter = require("global-queue");
 let ServiceApi = require('resource-management-framework')
 	.ServiceApi;
+let TicketApi = require('resource-management-framework')
+	.TicketApi;
 
 class PandoraBox {
 	constructor() {
 		this.emitter = emitter;
 	}
 
-	init(cfg) {}
+	init(cfg) {
+		this.services = new ServiceApi();
+		this.services.initContent();
+		this.tickets = new TicketApi();
+		this.tickets.initContent();
+	}
 
 	//API
-	actionServiceGroups({
-		workstation,
-		user_id,
-		user_type = "SystemEntity",
-		query
-	}) {
-		return this.emitter.addTask('agent', {
-				_action: 'available-workstations',
-				user_id,
-				user_type: "SystemEntity"
-			})
-			.then((res) => {
-				return this.iris.getServiceTree(query);
-			})
+	actionSlotsCache({}) {
+		return this.tickets.getServiceSlotsCache();
 	}
 
 	actionBootstrap({
@@ -43,16 +38,11 @@ class PandoraBox {
 			.then((res) => {
 				term = _.find(res, (val) => (val.device_type === 'pandora-box'));
 
-				return Promise.props({
-					workstation: this.emitter.addTask('workstation', {
-							_action: 'occupy',
-							user_id,
-							user_type,
-							workstation
-						})
-						.then((res) => {
-							return res.workstation;
-						})
+				return this.emitter.addTask('workstation', {
+					_action: 'occupy',
+					user_id,
+					user_type,
+					workstation
 				});
 			})
 			.catch(err => {
