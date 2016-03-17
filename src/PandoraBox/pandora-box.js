@@ -3,8 +3,9 @@
 let emitter = require("global-queue");
 let ServiceApi = require('resource-management-framework')
 	.ServiceApi;
-let TicketApi = require('resource-management-framework')
-	.TicketApi;
+let BookingApi = require('resource-management-framework')
+	.BookingApi;
+let moment = require('moment-timezone');
 
 class PandoraBox {
 	constructor() {
@@ -14,13 +15,34 @@ class PandoraBox {
 	init(cfg) {
 		this.services = new ServiceApi();
 		this.services.initContent();
-		this.tickets = new TicketApi();
-		this.tickets.initContent();
+		this.iris = new BookingApi();
+		this.iris.initContent();
 	}
 
 	//API
-	actionSlotsCache({}) {
-		return this.tickets.getServiceSlotsCache();
+	actionPlacementSnapshot({
+		user_id,
+		workstation,
+		dedicated_date
+	}) {
+		return this.emitter.addTask('prebook', {
+				_action: 'workstation-organization-data',
+				workstation
+			})
+			.then((org) => {
+				return this.iris.observe({
+					operator: '*',
+					time_description: [0, 86400],
+					dedicated_date: moment.tz(dedicated_date, org.org_merged.org_timezone),
+					service_keys: this.services.startpoint.cache_service_ids,
+					organization: org.org_merged.id,
+					count: 0,
+					service_count: 1,
+					method: 'prebook',
+					existing_only: true
+				});
+			})
+			.then(res => _.values(res));
 	}
 
 	actionBootstrap({
