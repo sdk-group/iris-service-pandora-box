@@ -34,7 +34,7 @@ class PandoraBox {
 					operator: '*',
 					time_description: [0, 86400],
 					dedicated_date: moment.tz(dedicated_date, org.org_merged.org_timezone),
-					service_keys: this.services.startpoint.cache_service_ids,
+					service_keys: this.services.getSystemName('cache', 'service_ids'),
 					organization: org.org_merged.id,
 					count: 0,
 					service_count: 1,
