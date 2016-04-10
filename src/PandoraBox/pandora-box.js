@@ -66,10 +66,7 @@ class PandoraBox {
 					user_type,
 					workstation
 				});
-			})
-			.catch(err => {
-				console.log("TERM BTSTRP ERR", err.stack);
-			})
+			});
 	}
 
 	actionReady({
