@@ -33,7 +33,7 @@ class PandoraBox {
 					operator: '*',
 					time_description: [0, 86400],
 					dedicated_date: moment.tz(dedicated_date, org.org_merged.org_timezone),
-					service_keys: this.services.getSystemName('cache', 'service_ids'),
+					service_keys: this.services.getSystemName('registry', 'service'),
 					operator_keys: this.services.getSystemName('global', 'membership_description'),
 					organization: org.org_merged.id,
 					count: 0,
