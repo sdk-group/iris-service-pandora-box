@@ -9,6 +9,7 @@ let tasks = [];
 
 module.exports = {
 	module: require('./pandora-box.js'),
+	name: 'pandora-box',
 	permissions: [],
 	exposed: true,
 	tasks: tasks,
